@@ -22,6 +22,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Function;
 import com.metamx.common.parsers.TimestampParser;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 import java.util.List;
 import java.util.Map;
@@ -41,6 +42,8 @@ public class TimestampSpec
   private static final String DEFAULT_FORMAT = "auto";
   private static final DateTime DEFAULT_MISSING_VALUE = null;
 
+  //private final String timezone;
+  private final String timezone;
   private final String timestampColumn;
   private final String timestampFormat;
   private final Function<Object, DateTime> timestampConverter;
@@ -54,6 +57,7 @@ public class TimestampSpec
   public TimestampSpec(
       @JsonProperty("column") String timestampColumn,
       @JsonProperty("format") String format,
+      @JsonProperty("timezone") String timezone,
       // this value should never be set for production data
       @JsonProperty("missingValue") DateTime missingValue
   )
@@ -64,7 +68,23 @@ public class TimestampSpec
     this.missingValue = missingValue == null
                         ? DEFAULT_MISSING_VALUE
                         : missingValue;
+
+    /**
+     * 获取并解析　用户提交的时区
+     */
+    String Usertimezone = "+08:00";
+
+    if(timezone != null && timezone.equals("UTC")){
+      Usertimezone = timezone;
+    }else if(timezone != null && timezone.startsWith("UTC")
+            && timezone.substring(3).matches("^[-+]\\d{4}$")){
+      Usertimezone = timezone.substring(3);
+    }
+
+    this.timezone = Usertimezone;
+
   }
+
 
   @JsonProperty("column")
   public String getTimestampColumn()
@@ -86,6 +106,12 @@ public class TimestampSpec
 
   public DateTime extractTimestamp(Map<String, Object> input)
   {
+
+    // 保留之前的时区
+    DateTimeZone timeZoneBak = DateTimeZone.getDefault();
+
+    // 设置用户时区
+    DateTimeZone.setDefault(DateTimeZone.forID(timezone));
     final Object o = input.get(timestampColumn);
     DateTime extracted = missingValue;
     if (o != null) {
@@ -95,10 +121,31 @@ public class TimestampSpec
         ParseCtx newCtx = new ParseCtx();
         newCtx.lastTimeObject = o;
         extracted = timestampConverter.apply(o);
+
+        // System.out.println("parse time -- " + extracted);
+        /*
+          * 需要将这个日期转换成的用户日期
+           */
+        /*
+        if(timestampFormat.equals("posix") || timestampFormat.equals("millis") || timestampFormat.equals("nano")){   // 时间戳类型
+
+          extracted = extracted.withZone(DateTimeZone.forID(timezone));
+          extracted = extracted.withZoneRetainFields(DateTimeZone.getDefault());
+        }
+
+        System.out.println("end -- " + extracted);
+        */
+
         newCtx.lastDateTime = extracted;
         parseCtx = newCtx;
       }
     }
+
+    System.out.println("--------------start : " + extracted);
+    // 转换成默认时区
+    extracted = extracted.withZoneRetainFields(timeZoneBak);
+    System.out.println("--------------end : " + extracted);
+    DateTimeZone.setDefault(timeZoneBak);
     return extracted;
   }
 

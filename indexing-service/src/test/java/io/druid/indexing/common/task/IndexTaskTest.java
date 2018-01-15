@@ -111,8 +111,12 @@ public class IndexTaskTest
                             new TimestampSpec(
                                 "ts",
                                 "auto",
+                                    null,
                                 null
                             ),
+                                ",",
+                                "\"",
+                                null,
                             new DimensionsSpec(
                                 DimensionsSpec.getDefaultSchemas(Arrays.asList("ts")),
                                 Lists.<String>newArrayList(),
@@ -197,8 +201,12 @@ public class IndexTaskTest
                             new TimestampSpec(
                                 "ts",
                                 "auto",
+                                    null,
                                 null
                             ),
+                                ",",
+                                "\"",
+                                null,
                             new DimensionsSpec(
                                 DimensionsSpec.getDefaultSchemas(Arrays.asList("ts")),
                                 Lists.<String>newArrayList(),
@@ -283,8 +291,12 @@ public class IndexTaskTest
                             new TimestampSpec(
                                 "ts",
                                 "auto",
+                                    null,
                                 null
                             ),
+                                ",",
+                                "\"",
+                                null,
                             new DimensionsSpec(
                                 DimensionsSpec.getDefaultSchemas(Arrays.asList("ts")),
                                 Lists.<String>newArrayList(),
@@ -399,8 +411,12 @@ public class IndexTaskTest
                             new TimestampSpec(
                                 "ts",
                                 "auto",
+                                    null,
                                 null
                             ),
+                                ",",
+                                "\"",
+                                null,
                             new DimensionsSpec(
                                 DimensionsSpec.getDefaultSchemas(Arrays.asList("dim")),
                                 Lists.<String>newArrayList(),

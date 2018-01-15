@@ -254,60 +254,60 @@ public class KafkaLookupExtractorFactoryTest
     Assert.assertTrue(factory.close());
   }
 
-  @Test
-  public void testStartStop()
-  {
-    final KafkaStream<String, String> kafkaStream = EasyMock.createStrictMock(KafkaStream.class);
-    final ConsumerIterator<String, String> consumerIterator = EasyMock.createStrictMock(ConsumerIterator.class);
-    final ConsumerConnector consumerConnector = EasyMock.createStrictMock(ConsumerConnector.class);
-    EasyMock.expect(consumerConnector.createMessageStreamsByFilter(
-        EasyMock.anyObject(TopicFilter.class),
-        EasyMock.anyInt(),
-        EasyMock.eq(
-            DEFAULT_STRING_DECODER),
-        EasyMock.eq(DEFAULT_STRING_DECODER)
-    )).andReturn(ImmutableList.of(kafkaStream)).once();
-    EasyMock.expect(kafkaStream.iterator()).andReturn(consumerIterator).anyTimes();
-    EasyMock.expect(consumerIterator.hasNext()).andReturn(false).anyTimes();
-    EasyMock.expect(cacheManager.getCacheMap(EasyMock.anyString()))
-            .andReturn(new ConcurrentHashMap<String, String>())
-            .once();
-    EasyMock.expect(cacheManager.delete(EasyMock.anyString())).andReturn(true).once();
-
-    final AtomicBoolean threadWasInterrupted = new AtomicBoolean(false);
-    consumerConnector.shutdown();
-    EasyMock.expectLastCall().andAnswer(new IAnswer<Object>()
-    {
-      @Override
-      public Object answer() throws Throwable {
-        threadWasInterrupted.set(Thread.currentThread().isInterrupted());
-        return null;
-      }
-    }).times(2);
-
-    EasyMock.replay(cacheManager, kafkaStream, consumerConnector, consumerIterator);
-    final KafkaLookupExtractorFactory factory = new KafkaLookupExtractorFactory(
-        cacheManager,
-        TOPIC,
-        ImmutableMap.of("zookeeper.connect", "localhost"),
-        10_000L,
-        false
-    )
-    {
-      @Override
-      ConsumerConnector buildConnector(Properties properties)
-      {
-        return consumerConnector;
-      }
-    };
-
-    Assert.assertTrue(factory.start());
-    Assert.assertTrue(factory.close());
-    Assert.assertTrue(factory.getFuture().isDone());
-    Assert.assertFalse(threadWasInterrupted.get());
-
-    EasyMock.verify(cacheManager);
-  }
+//  @Test
+//  public void testStartStop()
+//  {
+//    final KafkaStream<String, String> kafkaStream = EasyMock.createStrictMock(KafkaStream.class);
+//    final ConsumerIterator<String, String> consumerIterator = EasyMock.createStrictMock(ConsumerIterator.class);
+//    final ConsumerConnector consumerConnector = EasyMock.createStrictMock(ConsumerConnector.class);
+//    EasyMock.expect(consumerConnector.createMessageStreamsByFilter(
+//        EasyMock.anyObject(TopicFilter.class),
+//        EasyMock.anyInt(),
+//        EasyMock.eq(
+//            DEFAULT_STRING_DECODER),
+//        EasyMock.eq(DEFAULT_STRING_DECODER)
+//    )).andReturn(ImmutableList.of(kafkaStream)).once();
+//    EasyMock.expect(kafkaStream.iterator()).andReturn(consumerIterator).anyTimes();
+//    EasyMock.expect(consumerIterator.hasNext()).andReturn(false).anyTimes();
+//    EasyMock.expect(cacheManager.getCacheMap(EasyMock.anyString()))
+//            .andReturn(new ConcurrentHashMap<String, String>())
+//            .once();
+//    EasyMock.expect(cacheManager.delete(EasyMock.anyString())).andReturn(true).once();
+//
+//    final AtomicBoolean threadWasInterrupted = new AtomicBoolean(false);
+//    consumerConnector.shutdown();
+//    EasyMock.expectLastCall().andAnswer(new IAnswer<Object>()
+//    {
+//      @Override
+//      public Object answer() throws Throwable {
+//        threadWasInterrupted.set(Thread.currentThread().isInterrupted());
+//        return null;
+//      }
+//    }).times(2);
+//
+//    EasyMock.replay(cacheManager, kafkaStream, consumerConnector, consumerIterator);
+//    final KafkaLookupExtractorFactory factory = new KafkaLookupExtractorFactory(
+//        cacheManager,
+//        TOPIC,
+//        ImmutableMap.of("zookeeper.connect", "localhost"),
+//        10_000L,
+//        false
+//    )
+//    {
+//      @Override
+//      ConsumerConnector buildConnector(Properties properties)
+//      {
+//        return consumerConnector;
+//      }
+//    };
+//
+//    Assert.assertTrue(factory.start());
+//    Assert.assertTrue(factory.close());
+//    Assert.assertTrue(factory.getFuture().isDone());
+//    Assert.assertFalse(threadWasInterrupted.get());
+//
+//    EasyMock.verify(cacheManager);
+//  }
 
 
   @Test

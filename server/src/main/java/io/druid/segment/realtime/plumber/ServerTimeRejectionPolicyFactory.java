@@ -20,6 +20,7 @@
 package io.druid.segment.realtime.plumber;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.Period;
 
 public class ServerTimeRejectionPolicyFactory implements RejectionPolicyFactory
@@ -41,6 +42,7 @@ public class ServerTimeRejectionPolicyFactory implements RejectionPolicyFactory
       public boolean accept(long timestamp)
       {
         long now = System.currentTimeMillis();
+                //new DateTime(System.currentTimeMillis()).withZone(DateTimeZone.forID("+0800")).withZoneRetainFields(DateTimeZone.UTC).getMillis();
 
         boolean notTooOld = timestamp >= (now - windowMillis);
         boolean notTooYoung = timestamp <= (now + windowMillis);

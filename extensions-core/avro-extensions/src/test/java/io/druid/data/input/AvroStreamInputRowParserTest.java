@@ -78,7 +78,7 @@ public class AvroStreamInputRowParserTest
   public static final DateTime DATE_TIME = new DateTime(2015, 10, 25, 19, 30);
   public static final List<String> DIMENSIONS = Arrays.asList(EVENT_TYPE, ID, SOME_OTHER_ID, IS_VALID);
   public static final TimeAndDimsParseSpec PARSE_SPEC = new TimeAndDimsParseSpec(
-      new TimestampSpec("timestamp", "millis", null),
+      new TimestampSpec("timestamp", "millis", null, null),
       new DimensionsSpec(DimensionsSpec.getDefaultSchemas(DIMENSIONS), Collections.<String>emptyList(), null)
   );
   public static final MyFixed SOME_FIXED_VALUE = new MyFixed(ByteBuffer.allocate(16).array());

@@ -136,22 +136,28 @@ public class RemoteTaskRunner implements WorkerTaskRunner, TaskLogStreamer
   private final Supplier<WorkerBehaviorConfig> workerConfigRef;
 
   // all workers that exist in ZK
+  // 从 zookeeper 中监控到的所有的在线的 worker
   private final ConcurrentMap<String, ZkWorker> zkWorkers = new ConcurrentHashMap<>();
   // payloads of pending tasks, which we remember just long enough to assign to workers
   private final ConcurrentMap<String, Task> pendingTaskPayloads = new ConcurrentHashMap<>();
   // tasks that have not yet been assigned to a worker
+  // 尚未分配给工作人员的任务
   private final RemoteTaskRunnerWorkQueue pendingTasks = new RemoteTaskRunnerWorkQueue();
   // all tasks that have been assigned to a worker
+  // 已分配给工作人员的正在运行的任务
   private final RemoteTaskRunnerWorkQueue runningTasks = new RemoteTaskRunnerWorkQueue();
   // tasks that are complete but not cleaned up yet
+  // 已经完成的尚未清理掉的任务
   private final RemoteTaskRunnerWorkQueue completeTasks = new RemoteTaskRunnerWorkQueue();
 
   private final ExecutorService runPendingTasksExec;
 
   // Workers that have been marked as lazy. these workers are not running any tasks and can be terminated safely by the scaling policy.
+  // 被标记为懒惰的工人。 这些工作人员没有运行任何任务，可以通过缩放策略安全终止。
   private final ConcurrentMap<String, ZkWorker> lazyWorkers = new ConcurrentHashMap<>();
 
   // task runner listeners
+  // 监听正在运行的任务
   private final CopyOnWriteArrayList<Pair<TaskRunnerListener, Executor>> listeners = new CopyOnWriteArrayList<>();
 
   // workers which were assigned a task and are yet to acknowledge same.
@@ -1185,6 +1191,8 @@ public class RemoteTaskRunner implements WorkerTaskRunner, TaskLogStreamer
 
   protected List<String> getAssignedTasks(Worker worker) throws Exception
   {
+    // ${TaskDir:/druid/indexer/tasks}/${workHost}
+    // 获取这个节点下的子节点(任务)
     final List<String> assignedTasks = Lists.newArrayList(
         cf.getChildren().forPath(JOINER.join(indexerZkConfig.getTasksPath(), worker.getHost()))
     );

@@ -53,7 +53,7 @@ public class JavaScriptParseSpecTest
         )
     );
     JavaScriptParseSpec spec = new JavaScriptParseSpec(
-        new TimestampSpec("abc", "iso", null),
+        new TimestampSpec("abc", "iso", null,null),
         new DimensionsSpec(DimensionsSpec.getDefaultSchemas(Arrays.asList("abc")), null, null),
         "abc",
         JavaScriptConfig.getDefault()
@@ -74,7 +74,7 @@ public class JavaScriptParseSpecTest
   {
     final JavaScriptConfig config = JavaScriptConfig.getDefault();
     JavaScriptParseSpec spec = new JavaScriptParseSpec(
-        new TimestampSpec("abc", "iso", null),
+        new TimestampSpec("abc", "iso", null,null),
         new DimensionsSpec(DimensionsSpec.getDefaultSchemas(Arrays.asList("abc")), null, null),
         "function(str) { var parts = str.split(\"-\"); return { one: parts[0], two: parts[1] } }",
         config
@@ -90,7 +90,7 @@ public class JavaScriptParseSpecTest
   {
     final JavaScriptConfig config = new JavaScriptConfig(true);
     JavaScriptParseSpec spec = new JavaScriptParseSpec(
-        new TimestampSpec("abc", "iso", null),
+        new TimestampSpec("abc", "iso", null,null),
         new DimensionsSpec(DimensionsSpec.getDefaultSchemas(Arrays.asList("abc")), null, null),
         "abc",
         config

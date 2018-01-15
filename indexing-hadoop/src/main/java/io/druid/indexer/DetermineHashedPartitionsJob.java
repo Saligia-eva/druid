@@ -51,6 +51,7 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeComparator;
+import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
 
 import java.io.IOException;
@@ -73,6 +74,7 @@ public class DetermineHashedPartitionsJob implements Jobby
   )
   {
     this.config = config;
+
   }
 
   public boolean run()
@@ -85,15 +87,18 @@ public class DetermineHashedPartitionsJob implements Jobby
       long startTime = System.currentTimeMillis();
       final Job groupByJob = Job.getInstance(
           new Configuration(),
-          String.format("%s-determine_partitions_hashed-%s", config.getDataSource(), config.getIntervals())
+          String.format("%s-determine_partitions_hashed", config.getDataSource())
       );
+
+      groupByJob.setJarByClass(DetermineHashedPartitionsJob.class);
 
       JobHelper.injectSystemProperties(groupByJob);
       config.addJobProperties(groupByJob);
-      groupByJob.setMapperClass(DetermineCardinalityMapper.class);
+
+      groupByJob.setMapperClass(DetermineCardinalityMap.class);
       groupByJob.setMapOutputKeyClass(LongWritable.class);
       groupByJob.setMapOutputValueClass(BytesWritable.class);
-      groupByJob.setReducerClass(DetermineCardinalityReducer.class);
+      groupByJob.setReducerClass(DetermineCardinalityReduce.class);
       groupByJob.setOutputKeyClass(NullWritable.class);
       groupByJob.setOutputValueClass(NullWritable.class);
       groupByJob.setOutputFormatClass(SequenceFileOutputFormat.class);
@@ -157,6 +162,7 @@ public class DetermineHashedPartitionsJob implements Jobby
         if (fileSystem == null) {
           fileSystem = partitionInfoPath.getFileSystem(groupByJob.getConfiguration());
         }
+        log.info(">-- partitionInfoPath : " + fileSystem.getScheme() + "---" + partitionInfoPath);
         if (Utils.exists(groupByJob, fileSystem, partitionInfoPath)) {
           final Long numRows = config.JSON_MAPPER.readValue(
               Utils.openInputStream(groupByJob, partitionInfoPath), new TypeReference<Long>()
@@ -209,7 +215,7 @@ public class DetermineHashedPartitionsJob implements Jobby
     }
   }
 
-  public static class DetermineCardinalityMapper extends HadoopDruidIndexerMapper<LongWritable, BytesWritable>
+  public static class DetermineCardinalityMap extends HadoopDruidIndexerMapper<LongWritable, BytesWritable>
   {
     private static HashFunction hashFunction = Hashing.murmur3_128();
     private QueryGranularity rollupGranularity = null;
@@ -222,6 +228,7 @@ public class DetermineHashedPartitionsJob implements Jobby
         throws IOException, InterruptedException
     {
       super.setup(context);
+
       rollupGranularity = getConfig().getGranularitySpec().getQueryGranularity();
       config = HadoopDruidIndexerConfig.fromConfiguration(context.getConfiguration());
       Optional<Set<Interval>> intervals = config.getSegmentGranularIntervals();
@@ -246,7 +253,6 @@ public class DetermineHashedPartitionsJob implements Jobby
         boolean reportParseExceptions
     ) throws IOException, InterruptedException
     {
-
       final List<Object> groupKey = Rows.toGroupKey(
           rollupGranularity.truncate(inputRow.getTimestampFromEpoch()),
           inputRow
@@ -296,9 +302,12 @@ public class DetermineHashedPartitionsJob implements Jobby
 
   }
 
-  public static class DetermineCardinalityReducer
+  public static class DetermineCardinalityReduce
       extends Reducer<LongWritable, BytesWritable, NullWritable, NullWritable>
   {
+    public static enum HashPartitionCount{
+      reduce_num;
+    }
     private final List<Interval> intervals = Lists.newArrayList();
     protected HadoopDruidIndexerConfig config = null;
 
@@ -306,8 +315,10 @@ public class DetermineHashedPartitionsJob implements Jobby
     protected void setup(Context context)
         throws IOException, InterruptedException
     {
+      DateTimeZone.setDefault(DateTimeZone.forID("+0800"));
       config = HadoopDruidIndexerConfig.fromConfiguration(context.getConfiguration());
     }
+
 
     @Override
     protected void reduce(
@@ -316,15 +327,22 @@ public class DetermineHashedPartitionsJob implements Jobby
         Context context
     ) throws IOException, InterruptedException
     {
+      context.getCounter(HashPartitionCount.reduce_num).increment(1);
+
       HyperLogLogCollector aggregate = HyperLogLogCollector.makeLatestCollector();
       for (BytesWritable value : values) {
         aggregate.fold(
             HyperLogLogCollector.makeCollector(ByteBuffer.wrap(value.getBytes(), 0, value.getLength()))
         );
       }
-      Interval interval = config.getGranularitySpec().getSegmentGranularity().bucket(new DateTime(key.get()));
+      DateTime bucket = new DateTime(key.get());
+
+      Interval interval = config.getGranularitySpec().getSegmentGranularity().bucket(bucket);
       intervals.add(interval);
+
       final Path outPath = config.makeSegmentPartitionInfoPath(interval);
+
+      // 创建目录并返回
       final OutputStream out = Utils.makePathAndOutputStream(
           context, outPath, config.isOverwriteFiles()
       );
@@ -378,6 +396,10 @@ public class DetermineHashedPartitionsJob implements Jobby
     private Configuration config;
     private boolean determineIntervals;
     private Map<LongWritable, Integer> reducerLookup;
+
+    public DetermineHashedPartitionsPartitioner(){
+
+    }
 
     @Override
     public int getPartition(LongWritable interval, BytesWritable text, int numPartitions)

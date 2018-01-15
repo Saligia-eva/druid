@@ -356,12 +356,14 @@ public class JobHelper
       if (failedMessage == null || config.getSchema().getTuningConfig().isCleanupOnFailure()) {
         Path workingPath = config.makeIntermediatePath();
         log.info("Deleting path[%s]", workingPath);
+
         try {
           workingPath.getFileSystem(injectSystemProperties(new Configuration())).delete(workingPath, true);
         }
         catch (IOException e) {
           log.error(e, "Failed to cleanup path[%s]", workingPath);
         }
+
       }
     }
 

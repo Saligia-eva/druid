@@ -84,6 +84,8 @@ public class HadoopDruidIndexerConfig
   private static final Injector injector;
 
   public static final String CONFIG_PROPERTY = "druid.indexer.config";
+  public static final String SYSTIME_ZONE = "druid.systime.zone";
+  public static final String USERTIME_ZONE = "druid.input.zone";
   public static final Charset JAVA_NATIVE_CHARSET = Charset.forName("Unicode");
   public static final Splitter TAB_SPLITTER = Splitter.on("\t");
   public static final Joiner TAB_JOINER = Joiner.on("\t");
@@ -226,6 +228,7 @@ public class HadoopDruidIndexerConfig
   {
     this.schema = spec;
     this.pathSpec = JSON_MAPPER.convertValue(spec.getIOConfig().getPathSpec(), PathSpec.class);
+
     for (Map.Entry<DateTime, List<HadoopyShardSpec>> entry : spec.getTuningConfig().getShardSpecs().entrySet()) {
       if (entry.getValue() == null || entry.getValue().isEmpty()) {
         continue;
@@ -549,7 +552,7 @@ public class HadoopDruidIndexerConfig
   public void addJobProperties(Job job)
   {
     Configuration conf = job.getConfiguration();
-
+    // 加载用户的配置 {配置位于　: tuningConfig :jobProperties}
     for (final Map.Entry<String, String> entry : schema.getTuningConfig().getJobProperties().entrySet()) {
       conf.set(entry.getKey(), entry.getValue());
     }

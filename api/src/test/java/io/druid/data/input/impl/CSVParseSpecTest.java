@@ -34,8 +34,12 @@ public class CSVParseSpecTest
         new TimestampSpec(
             "timestamp",
             "auto",
+                null,
             null
         ),
+            ",",
+            "\"",
+            "null",
         new DimensionsSpec(
             DimensionsSpec.getDefaultSchemas(Arrays.asList("a", "b")),
             Lists.<String>newArrayList(),
@@ -53,8 +57,12 @@ public class CSVParseSpecTest
         new TimestampSpec(
             "timestamp",
             "auto",
+                null,
             null
         ),
+            ",",
+            "\"",
+            "null",
         new DimensionsSpec(
             DimensionsSpec.getDefaultSchemas(Arrays.asList("a,", "b")),
             Lists.<String>newArrayList(),

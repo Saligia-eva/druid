@@ -30,7 +30,7 @@ public class TimestampSpecTest
   @Test
   public void testExtractTimestamp() throws Exception
   {
-    TimestampSpec spec = new TimestampSpec("TIMEstamp", "yyyy-MM-dd", null);
+    TimestampSpec spec = new TimestampSpec("TIMEstamp", "yyyy-MM-dd", null,null);
     Assert.assertEquals(
         new DateTime("2014-03-01"),
         spec.extractTimestamp(ImmutableMap.<String, Object>of("TIMEstamp", "2014-03-01"))
@@ -40,7 +40,7 @@ public class TimestampSpecTest
   @Test
   public void testExtractTimestampWithMissingTimestampColumn() throws Exception
   {
-    TimestampSpec spec = new TimestampSpec(null, null, new DateTime(0));
+    TimestampSpec spec = new TimestampSpec(null, null, null,new DateTime(0));
     Assert.assertEquals(
         new DateTime("1970-01-01"),
         spec.extractTimestamp(ImmutableMap.<String, Object>of("dim", "foo"))
@@ -58,7 +58,7 @@ public class TimestampSpecTest
         "2000-01-01T05:00:02",
         "2000-01-01T05:00:03",
         };
-    TimestampSpec spec = new TimestampSpec("TIMEstamp", DATE_FORMAT, null);
+    TimestampSpec spec = new TimestampSpec("TIMEstamp", DATE_FORMAT, null,null);
 
     for (int i = 0; i < dates.length; ++i) {
       String date = dates[i];

@@ -65,21 +65,16 @@ public class CoordinatorClient
   public List<ImmutableSegmentLoadInfo> fetchServerView(String dataSource, Interval interval, boolean incompleteOk)
   {
     try {
+      String url = String.format(
+              "%s/datasources/%s/intervals/%s/serverview?partial=%s",
+              baseUrl(),
+              dataSource,
+              interval.toString().replace("/", "_"),
+              incompleteOk
+      );
+      System.out.println("request url : " + url);
       StatusResponseHolder response = client.go(
-          new Request(
-              HttpMethod.GET,
-              new URL(
-                  String.format(
-                      "%s/datasources/%s/intervals/%s/serverview?partial=%s",
-                      baseUrl(),
-                      dataSource,
-                      interval.toString().replace("/", "_"),
-                      incompleteOk
-                  )
-              )
-          ),
-          RESPONSE_HANDLER
-      ).get();
+          new Request(HttpMethod.GET, new URL(url)), RESPONSE_HANDLER ).get();
       if (!response.getStatus().equals(HttpResponseStatus.OK)) {
         throw new ISE(
             "Error while fetching serverView status[%s] content[%s]",

@@ -321,6 +321,7 @@ public class RealtimeIndexTask extends AbstractTask
     Supplier<Committer> committerSupplier = null;
 
     try {
+      log.info(">>> start firhourse");
       plumber.startJob();
 
       // Set up metrics emission
@@ -340,6 +341,7 @@ public class RealtimeIndexTask extends AbstractTask
 
       // Time to read data!
       while (firehose != null && (!gracefullyStopped || firehoseDrainableByClosing) && firehose.hasMore()) {
+        // 获取每一次聚合数据
         Plumbers.addNextRow(
             committerSupplier,
             firehose,

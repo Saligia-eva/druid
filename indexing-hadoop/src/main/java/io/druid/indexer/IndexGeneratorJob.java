@@ -71,6 +71,7 @@ import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
 
 import java.io.File;
@@ -158,13 +159,15 @@ public class IndexGeneratorJob implements Jobby
     try {
       Job job = Job.getInstance(
           new Configuration(),
-          String.format("%s-index-generator-%s", config.getDataSource(), config.getIntervals())
+          String.format("%s-index-generator", config.getDataSource())
       );
 
       job.getConfiguration().set("io.sort.record.percent", "0.23");
 
       JobHelper.injectSystemProperties(job);
       config.addJobProperties(job);
+
+      job.setJarByClass(IndexGeneratorJob.class);
 
       job.setMapperClass(IndexGeneratorMapper.class);
       job.setMapOutputValueClass(BytesWritable.class);
@@ -445,9 +448,14 @@ public class IndexGeneratorJob implements Jobby
   {
     private Configuration config;
 
+    public IndexGeneratorPartitioner(){
+
+    }
+
     @Override
     public int getPartition(BytesWritable bytesWritable, Writable value, int numPartitions)
     {
+
       final ByteBuffer bytes = ByteBuffer.wrap(bytesWritable.getBytes());
       bytes.position(4); // Skip length added by SortableBytes
       int shardNum = bytes.getInt();
@@ -536,8 +544,8 @@ public class IndexGeneratorJob implements Jobby
     protected void setup(Context context)
         throws IOException, InterruptedException
     {
+      DateTimeZone.setDefault(DateTimeZone.forID("+0800"));
       config = HadoopDruidIndexerConfig.fromConfiguration(context.getConfiguration());
-
       aggregators = config.getSchema().getDataSchema().getAggregators();
       combiningAggs = new AggregatorFactory[aggregators.length];
       for (int i = 0; i < aggregators.length; ++i) {
@@ -545,6 +553,7 @@ public class IndexGeneratorJob implements Jobby
         combiningAggs[i] = aggregators[i].getCombiningFactory();
       }
     }
+
 
     @Override
     protected void reduce(

@@ -82,6 +82,7 @@ public class EventReceiverFirehoseTest
                 new TimestampSpec(
                     "timestamp",
                     "auto",
+                        null,
                     null
                 ), new DimensionsSpec(DimensionsSpec.getDefaultSchemas(ImmutableList.of("d1")), null, null),
                 null,
@@ -214,6 +215,7 @@ public class EventReceiverFirehoseTest
                         new TimestampSpec(
                             "timestamp",
                             "auto",
+                                null,
                             null
                         ), new DimensionsSpec(DimensionsSpec.getDefaultSchemas(ImmutableList.of("d1")), null, null),
                         null,

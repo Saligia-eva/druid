@@ -57,7 +57,7 @@ public class DataSchemaTest
     Map<String, Object> parser = jsonMapper.convertValue(
         new StringInputRowParser(
             new JSONParseSpec(
-                new TimestampSpec("time", "auto", null),
+                new TimestampSpec("time", "auto", null, null),
                 new DimensionsSpec(DimensionsSpec.getDefaultSchemas(ImmutableList.of("dimB", "dimA")), null, null),
                 null,
                 null
@@ -89,7 +89,7 @@ public class DataSchemaTest
     Map<String, Object> parser = jsonMapper.convertValue(
         new StringInputRowParser(
             new JSONParseSpec(
-                new TimestampSpec("time", "auto", null),
+                new TimestampSpec("time", "auto", null,  null),
                 new DimensionsSpec(DimensionsSpec.getDefaultSchemas(ImmutableList.of("time", "dimA", "dimB", "col2")), ImmutableList.of("dimC"), null),
                 null,
                 null
@@ -121,7 +121,7 @@ public class DataSchemaTest
     Map<String, Object> parser = jsonMapper.convertValue(
         new StringInputRowParser(
             new JSONParseSpec(
-                new TimestampSpec("time", "auto", null),
+                new TimestampSpec("time", "auto", null, null),
                 new DimensionsSpec(DimensionsSpec.getDefaultSchemas(ImmutableList.of("time", "dimA", "dimB", "metric1")), ImmutableList.of("dimC"), null),
                 null,
                 null
@@ -205,7 +205,7 @@ public class DataSchemaTest
     Assert.assertEquals(
         actual.getParser().getParseSpec(),
         new JSONParseSpec(
-            new TimestampSpec("xXx", null, null),
+            new TimestampSpec("xXx", null, null, null),
             new DimensionsSpec(null, Arrays.asList("metric1", "xXx", "col1"), null),
             null,
             null

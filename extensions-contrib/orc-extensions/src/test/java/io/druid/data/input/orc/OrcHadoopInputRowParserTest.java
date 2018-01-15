@@ -90,6 +90,7 @@ public class OrcHadoopInputRowParserTest
             new TimestampSpec(
                 "timestamp",
                 "auto",
+                    null,
                 null
             ),
             new DimensionsSpec(
@@ -111,6 +112,7 @@ public class OrcHadoopInputRowParserTest
         new TimestampSpec(
             "timestamp",
             "auto",
+                null,
             null
         ),
         new DimensionsSpec(

@@ -80,14 +80,14 @@ public class MetadataTest
     Metadata m1 = new Metadata();
     m1.put("k", "v");
     m1.setAggregators(aggs);
-    m1.setTimestampSpec(new TimestampSpec("ds", "auto", null));
+    m1.setTimestampSpec(new TimestampSpec("ds", "auto", null,null));
     m1.setQueryGranularity(QueryGranularities.ALL);
     m1.setRollup(Boolean.FALSE);
 
     Metadata m2 = new Metadata();
     m2.put("k", "v");
     m2.setAggregators(aggs);
-    m2.setTimestampSpec(new TimestampSpec("ds", "auto", null));
+    m2.setTimestampSpec(new TimestampSpec("ds", "auto", null,null));
     m2.setQueryGranularity(QueryGranularities.ALL);
     m2.setRollup(Boolean.FALSE);
 
@@ -98,7 +98,7 @@ public class MetadataTest
             new LongMaxAggregatorFactory("n", "n")
         }
     );
-    merged.setTimestampSpec(new TimestampSpec("ds", "auto", null));
+    merged.setTimestampSpec(new TimestampSpec("ds", "auto", null, null));
     merged.setRollup(Boolean.FALSE);
     merged.setQueryGranularity(QueryGranularities.ALL);
     Assert.assertEquals(merged, Metadata.merge(ImmutableList.of(m1, m2), null));
@@ -126,7 +126,7 @@ public class MetadataTest
         Metadata.merge(metadataToBeMerged, explicitAggs)
     );
 
-    merged.setTimestampSpec(new TimestampSpec("ds", "auto", null));
+    merged.setTimestampSpec(new TimestampSpec("ds", "auto", null,null));
     merged.setQueryGranularity(QueryGranularities.ALL);
     m1.setRollup(Boolean.TRUE);
     Assert.assertEquals(

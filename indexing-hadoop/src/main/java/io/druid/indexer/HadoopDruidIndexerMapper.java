@@ -29,8 +29,10 @@ import io.druid.segment.indexing.granularity.GranularitySpec;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 import java.io.IOException;
+import java.util.Date;
 
 public abstract class HadoopDruidIndexerMapper<KEYOUT, VALUEOUT> extends Mapper<Object, Object, KEYOUT, VALUEOUT>
 {
@@ -41,15 +43,23 @@ public abstract class HadoopDruidIndexerMapper<KEYOUT, VALUEOUT> extends Mapper<
   protected GranularitySpec granularitySpec;
   private boolean reportParseExceptions;
 
+
+  public enum DataFlushCOUNT{
+    TIME_RANGE_ERROR,
+    COLUMN_FORMAT_ERROR
+  }
+
   @Override
   protected void setup(Context context)
       throws IOException, InterruptedException
   {
+    DateTimeZone.setDefault(DateTimeZone.forID("+0800"));
     config = HadoopDruidIndexerConfig.fromConfiguration(context.getConfiguration());
     parser = config.getParser();
     granularitySpec = config.getGranularitySpec();
     reportParseExceptions = !config.isIgnoreInvalidRows();
   }
+
 
   public HadoopDruidIndexerConfig getConfig()
   {
@@ -72,6 +82,7 @@ public abstract class HadoopDruidIndexerMapper<KEYOUT, VALUEOUT> extends Mapper<
         inputRow = parseInputRow(value, parser);
       }
       catch (ParseException e) {
+        context.getCounter(DataFlushCOUNT.COLUMN_FORMAT_ERROR).increment(1);
         if (reportParseExceptions) {
           throw e;
         }
@@ -85,6 +96,8 @@ public abstract class HadoopDruidIndexerMapper<KEYOUT, VALUEOUT> extends Mapper<
           || granularitySpec.bucketInterval(new DateTime(inputRow.getTimestampFromEpoch()))
                             .isPresent()) {
         innerMap(inputRow, value, context, reportParseExceptions);
+      }else{
+        context.getCounter(DataFlushCOUNT.TIME_RANGE_ERROR).increment(1);
       }
     }
     catch (RuntimeException e) {

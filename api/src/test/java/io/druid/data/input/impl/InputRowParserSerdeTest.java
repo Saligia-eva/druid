@@ -45,7 +45,7 @@ public class InputRowParserSerdeTest
   {
     final StringInputRowParser parser = new StringInputRowParser(
         new JSONParseSpec(
-            new TimestampSpec("timestamp", "iso", null),
+            new TimestampSpec("timestamp", "iso", null, null),
             new DimensionsSpec(DimensionsSpec.getDefaultSchemas(ImmutableList.of("foo", "bar")), null, null),
             null,
             null
@@ -89,7 +89,7 @@ public class InputRowParserSerdeTest
   {
     final MapInputRowParser parser = new MapInputRowParser(
         new JSONParseSpec(
-            new TimestampSpec("timeposix", "posix", null),
+            new TimestampSpec("timeposix", "posix", null,null),
             new DimensionsSpec(DimensionsSpec.getDefaultSchemas(ImmutableList.of("foo", "bar")), ImmutableList.of("baz"), null),
             null,
             null
@@ -118,7 +118,7 @@ public class InputRowParserSerdeTest
   {
     final MapInputRowParser parser = new MapInputRowParser(
         new JSONParseSpec(
-            new TimestampSpec("timemillis", "millis", null),
+            new TimestampSpec("timemillis", "millis",null, null),
             new DimensionsSpec(DimensionsSpec.getDefaultSchemas(ImmutableList.of("foo", "values")), ImmutableList.of("toobig", "value"), null),
             null,
             null
@@ -155,7 +155,7 @@ public class InputRowParserSerdeTest
   {
     final StringInputRowParser parser = new StringInputRowParser(
         new JSONParseSpec(
-            new TimestampSpec("timestamp", "iso", null),
+            new TimestampSpec("timestamp", "iso", null,null),
             new DimensionsSpec(DimensionsSpec.getDefaultSchemas(ImmutableList.of("foo", "bar")), null, null),
             null,
             null
@@ -194,7 +194,7 @@ public class InputRowParserSerdeTest
     JSONPathSpec flattenSpec = new JSONPathSpec(true, fields);
     final StringInputRowParser parser = new StringInputRowParser(
         new JSONParseSpec(
-            new TimestampSpec("timestamp", "iso", null),
+            new TimestampSpec("timestamp", "iso", null,null),
             new DimensionsSpec(null, null, null),
             flattenSpec,
             null

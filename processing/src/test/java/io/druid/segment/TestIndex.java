@@ -216,7 +216,7 @@ public class TestIndex
   {
     final IncrementalIndexSchema schema = new IncrementalIndexSchema.Builder()
         .withMinTimestamp(new DateTime("2011-01-12T00:00:00.000Z").getMillis())
-        .withTimestampSpec(new TimestampSpec("ds", "auto", null))
+        .withTimestampSpec(new TimestampSpec("ds", "auto", null,null))
         .withQueryGranularity(QueryGranularities.NONE)
         .withMetrics(METRIC_AGGS)
         .withRollup(rollup)
@@ -243,7 +243,7 @@ public class TestIndex
   {
     final StringInputRowParser parser = new StringInputRowParser(
         new DelimitedParseSpec(
-            new TimestampSpec("ts", "iso", null),
+            new TimestampSpec("ts", "iso", null,null),
             new DimensionsSpec(DimensionsSpec.getDefaultSchemas(Arrays.asList(DIMENSIONS)), null, null),
             "\t",
             "\u0001",

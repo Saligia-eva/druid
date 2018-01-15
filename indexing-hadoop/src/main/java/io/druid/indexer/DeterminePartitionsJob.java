@@ -66,6 +66,7 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeComparator;
+import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
 
 import java.io.IOException;
@@ -309,6 +310,7 @@ public class DeterminePartitionsJob implements Jobby
     protected void setup(Context context)
         throws IOException, InterruptedException
     {
+      DateTimeZone.setDefault(DateTimeZone.forID("+0800"));
       final HadoopDruidIndexerConfig config = HadoopDruidIndexerConfig.fromConfiguration(context.getConfiguration());
       SingleDimensionPartitionsSpec spec = (SingleDimensionPartitionsSpec) config.getPartitionsSpec();
       helper = new DeterminePartitionsDimSelectionMapperHelper(config, spec.getPartitionDimension());
@@ -340,6 +342,7 @@ public class DeterminePartitionsJob implements Jobby
     protected void setup(Context context)
         throws IOException, InterruptedException
     {
+      DateTimeZone.setDefault(DateTimeZone.forID("+0800"));
       super.setup(context);
       final HadoopDruidIndexerConfig config = HadoopDruidIndexerConfig.fromConfiguration(context.getConfiguration());
       final SingleDimensionPartitionsSpec spec = (SingleDimensionPartitionsSpec) config.getPartitionsSpec();
@@ -376,6 +379,7 @@ public class DeterminePartitionsJob implements Jobby
     {
       this.config = config;
       this.partitionDimension = partitionDimension;
+      DateTimeZone.setDefault(DateTimeZone.forID("+0800"));
 
       final ImmutableMap.Builder<DateTime, Integer> timeIndexBuilder = ImmutableMap.builder();
       int idx = 0;

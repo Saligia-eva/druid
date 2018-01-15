@@ -106,7 +106,10 @@ public class IngestSegmentFirehoseTest
 
     StringInputRowParser parser = new StringInputRowParser(
         new CSVParseSpec(
-            new TimestampSpec("timestamp", "yyyyMMddHH", null),
+            new TimestampSpec("timestamp", "yyyyMMddHH", null,null),
+                ",",
+                "\"",
+                null,
             new DimensionsSpec(DimensionsSpec.getDefaultSchemas(ImmutableList.of("host")), null, null),
             null,
             ImmutableList.of("timestamp", "host", "visited")

@@ -71,10 +71,7 @@ import io.druid.timeline.DataSegment;
 import io.druid.timeline.VersionedIntervalTimeline;
 import io.druid.timeline.partition.SingleElementPartitionChunk;
 import org.apache.commons.io.FileUtils;
-import org.joda.time.DateTime;
-import org.joda.time.Duration;
-import org.joda.time.Interval;
-import org.joda.time.Period;
+import org.joda.time.*;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -204,6 +201,7 @@ public class RealtimePlumber implements Plumber
   @Override
   public int add(InputRow row, Supplier<Committer> committerSupplier) throws IndexSizeExceededException
   {
+    //System.out.println("add line");
     final Sink sink = getSink(row.getTimestampFromEpoch());
     if (sink == null) {
       return -1;
@@ -215,12 +213,15 @@ public class RealtimePlumber implements Plumber
       persist(committerSupplier.get());
     }
 
+    //log.info("numRows : " + numRows);
+
     return numRows;
   }
 
   private Sink getSink(long timestamp)
   {
     if (!rejectionPolicy.accept(timestamp)) {
+      log.info("input data is rejection : " + new DateTime(timestamp));
       return null;
     }
 
@@ -493,7 +494,9 @@ public class RealtimePlumber implements Plumber
             Joiner.on(", ").join(
                 Iterables.transform(
                     sinks.values(),
-                    new Function<Sink, String>()
+
+
+                        new Function<Sink, String>()
                     {
                       @Override
                       public String apply(Sink input)
@@ -740,7 +743,7 @@ public class RealtimePlumber implements Plumber
     final long windowMillis = windowPeriod.toStandardDuration().getMillis();
 
     log.info(
-        "Expect to run at [%s]",
+        ">> Expect to run at [%s]",
         new DateTime().plus(
             new Duration(
                 System.currentTimeMillis(),
@@ -785,7 +788,7 @@ public class RealtimePlumber implements Plumber
             }
         );
   }
-
+  // 合并并提交分之
   private void mergeAndPush()
   {
     final Granularity segmentGranularity = schema.getGranularitySpec().getSegmentGranularity();

@@ -177,6 +177,7 @@ public class DatasourcePathSpecTest
   @Test
   public void testAddInputPaths() throws Exception
   {
+    System.out.println(">>>>>>>>>> LOOK HERE <<<<<<<<<< ");
     HadoopDruidIndexerConfig hadoopIndexerConfig = makeHadoopDruidIndexerConfig();
 
     ObjectMapper mapper = new DefaultObjectMapper();
@@ -264,7 +265,10 @@ public class DatasourcePathSpecTest
                 HadoopDruidIndexerConfig.JSON_MAPPER.convertValue(
                     new StringInputRowParser(
                         new CSVParseSpec(
-                            new TimestampSpec("timestamp", "yyyyMMddHH", null),
+                            new TimestampSpec("timestamp", "yyyyMMddHH", null, null),
+                                ",",
+                                "\"",
+                                null,
                             new DimensionsSpec(null, null, null),
                             null,
                             ImmutableList.of("timestamp", "host", "visited")

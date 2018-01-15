@@ -185,7 +185,7 @@ public class KafkaIndexTaskTest
         objectMapper.convertValue(
             new StringInputRowParser(
                 new JSONParseSpec(
-                    new TimestampSpec("timestamp", "iso", null),
+                    new TimestampSpec("timestamp", "iso", null, null),
                     new DimensionsSpec(
                         DimensionsSpec.getDefaultSchemas(ImmutableList.<String>of("dim1", "dim2")),
                         null,

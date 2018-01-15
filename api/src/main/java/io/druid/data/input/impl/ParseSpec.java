@@ -41,11 +41,20 @@ public abstract class ParseSpec
 {
   private final TimestampSpec timestampSpec;
   private final DimensionsSpec dimensionsSpec;
+  private String nullparse = "null";
 
   protected ParseSpec(TimestampSpec timestampSpec, DimensionsSpec dimensionsSpec)
   {
     this.timestampSpec = timestampSpec;
     this.dimensionsSpec = dimensionsSpec;
+  }
+
+  protected ParseSpec(TimestampSpec timestampSpec, DimensionsSpec dimensionsSpec, String nullparse){
+    this.timestampSpec = timestampSpec;
+    this.dimensionsSpec = dimensionsSpec;
+    if(nullparse != null && nullparse.length() != 0){
+      this.nullparse = nullparse;
+    }
   }
 
   @JsonProperty
@@ -99,6 +108,10 @@ public abstract class ParseSpec
              ? !dimensionsSpec.equals(parseSpec.dimensionsSpec)
              : parseSpec.dimensionsSpec != null);
 
+  }
+
+  public String parseNull(){
+    return this.nullparse;
   }
 
   @Override

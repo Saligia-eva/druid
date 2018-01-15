@@ -55,6 +55,12 @@ public class MapInputRowParser implements InputRowParser<Map<String, Object>>
                                         )
                                     );
 
+    for(String dimension : dimensions){
+      if(theMap.containsKey(dimension) && theMap.get(dimension) == null) {
+        theMap.put(dimension,parseSpec.parseNull());
+      }
+    }
+
     final DateTime timestamp;
     try {
       timestamp = parseSpec.getTimestampSpec().extractTimestamp(theMap);

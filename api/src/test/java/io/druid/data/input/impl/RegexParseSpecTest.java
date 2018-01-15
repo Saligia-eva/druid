@@ -37,7 +37,7 @@ public class RegexParseSpecTest
   public void testSerde() throws IOException
   {
     RegexParseSpec spec = new RegexParseSpec(
-        new TimestampSpec("abc", "iso", null),
+        new TimestampSpec("abc", "iso", null,null),
         new DimensionsSpec(DimensionsSpec.getDefaultSchemas(Arrays.asList("abc")), null, null),
         "\u0001",
         Arrays.asList("abc"),

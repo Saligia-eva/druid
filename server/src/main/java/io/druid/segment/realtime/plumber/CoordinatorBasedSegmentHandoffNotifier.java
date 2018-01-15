@@ -104,6 +104,12 @@ public class CoordinatorBasedSegmentHandoffNotifier implements SegmentHandoffNot
               true
           );
 
+          log.info("========================================");
+          for(ImmutableSegmentLoadInfo info : loadedSegments){
+              log.info(info.toString());
+          }
+          log.info("==========================================");
+
           if (isHandOffComplete(loadedSegments, entry.getKey())) {
             log.info("Segment Handoff complete for dataSource[%s] Segment[%s]", dataSource, descriptor);
             entry.getValue().lhs.execute(entry.getValue().rhs);

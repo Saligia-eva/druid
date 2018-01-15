@@ -46,6 +46,7 @@ public class Plumbers
       final FireDepartmentMetrics metrics
   )
   {
+    //log.info("firehose get next rows ");
     final InputRow inputRow;
     try {
       inputRow = firehose.nextRow();
