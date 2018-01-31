@@ -159,7 +159,7 @@ public class CompressedVSizeIntsIndexedSupplier implements WritableSupplier<Inde
 
       final CompressedObjectStrategy.CompressionStrategy compression = CompressedObjectStrategy.CompressionStrategy.forId(
           buffer.get()
-      );
+      ); // 解码类型
 
       return new CompressedVSizeIntsIndexedSupplier(
           totalSize,

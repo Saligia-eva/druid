@@ -214,9 +214,9 @@ public class IndexIO
 
   public QueryableIndex loadIndex(File inDir) throws IOException
   {
-    final int version = SegmentUtils.getVersionFromDir(inDir);
+    final int version = SegmentUtils.getVersionFromDir(inDir);  // 读取　index.drd 返回相对应的　version
 
-    final IndexLoader loader = indexLoaders.get(version);
+    final IndexLoader loader = indexLoaders.get(version);       // 根据文件版本拿到相对应的解析器
 
     if (loader != null) {
       return loader.load(inDir, mapper);
@@ -970,17 +970,17 @@ public class IndexIO
     @Override
     public QueryableIndex load(File inDir, ObjectMapper mapper) throws IOException
     {
-      log.debug("Mapping v9 index[%s]", inDir);
+      log.debug("Mapping v9 index[%s]", inDir);　　// InDir 传入的是　segment 所在的目录
       long startTime = System.currentTimeMillis();
 
-      final int theVersion = Ints.fromByteArray(Files.toByteArray(new File(inDir, "version.bin")));
+      final int theVersion = Ints.fromByteArray(Files.toByteArray(new File(inDir, "version.bin"))); // 检查版本
       if (theVersion != V9_VERSION) {
         throw new IllegalArgumentException(String.format("Expected version[9], got[%s]", theVersion));
       }
 
-      SmooshedFileMapper smooshedFiles = Smoosh.map(inDir);
-
-      ByteBuffer indexBuffer = smooshedFiles.mapFile("index.drd");
+      SmooshedFileMapper smooshedFiles = Smoosh.map(inDir); // 加载列描述元信息　
+      // Index.drd 应由 segment 的版本，segment 的列 和 segment 作为通用索引，以毫秒为单位的开始和结束毫秒（16字节）以及位图索引类型组成.
+      ByteBuffer indexBuffer = smooshedFiles.mapFile("index.drd");    // 将 index.drd的数据信息映射进来
       /**
        * Index.drd should consist of the segment version, the columns and dimensions of the segment as generic
        * indexes, the interval start and end millis as longs (in 16 bytes), and a bitmap index type.
