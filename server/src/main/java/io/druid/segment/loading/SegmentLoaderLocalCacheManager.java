@@ -92,7 +92,7 @@ public class SegmentLoaderLocalCacheManager implements SegmentLoader
   @Override
   public Segment getSegment(DataSegment segment) throws SegmentLoadingException
   {
-    File segmentFiles = getSegmentFiles(segment); // 得到　segment 文件
+    File segmentFiles = getSegmentFiles(segment);
     final QueryableIndex index = factory.factorize(segmentFiles);
 
     return new QueryableIndexSegment(segment.getIdentifier(), index);
@@ -101,7 +101,7 @@ public class SegmentLoaderLocalCacheManager implements SegmentLoader
   @Override
   public File getSegmentFiles(DataSegment segment) throws SegmentLoadingException
   {
-    StorageLocation loc = findStorageLocationIfLoaded(segment);  // 返回　segment 的本地存储路径
+    StorageLocation loc = findStorageLocationIfLoaded(segment);
 
     final File retVal;
 
@@ -125,7 +125,7 @@ public class SegmentLoaderLocalCacheManager implements SegmentLoader
       // the parent directories of the segment are removed
       final File downloadStartMarker = new File(storageDir, "downloadStartMarker");
       synchronized (lock) {
-        if (!storageDir.mkdirs()) { // 创建　segment 的存储目录
+        if (!storageDir.mkdirs()) {
           log.debug("Unable to make parent file[%s]", storageDir);
         }
         try {
@@ -140,12 +140,12 @@ public class SegmentLoaderLocalCacheManager implements SegmentLoader
 
       // LoadSpec isn't materialized until here so that any system can interpret Segment without having to have all the LoadSpec dependencies.
       final LoadSpec loadSpec = jsonMapper.convertValue(segment.getLoadSpec(), LoadSpec.class);
-      final LoadSpec.LoadSpecResult result = loadSpec.loadSegment(storageDir); // 将　segment 从　deepstore 的存储位置下载下来
+      final LoadSpec.LoadSpecResult result = loadSpec.loadSegment(storageDir);
       if(result.getSize() != segment.getSize()){
         log.warn("Segment [%s] is different than expected size. Expected [%d] found [%d]", segment.getIdentifier(), segment.getSize(), result.getSize());
       }
 
-      if (!downloadStartMarker.delete()) { // 删除文件下载标记
+      if (!downloadStartMarker.delete()) {
         throw new SegmentLoadingException("Unable to remove marker file for [%s]", storageDir);
       }
 

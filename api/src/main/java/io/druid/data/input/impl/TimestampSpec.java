@@ -107,6 +107,11 @@ public class TimestampSpec
   public DateTime extractTimestamp(Map<String, Object> input)
   {
 
+    // 保留之前的时区
+    DateTimeZone timeZoneBak = DateTimeZone.getDefault();
+
+    // 设置用户时区
+    DateTimeZone.setDefault(DateTimeZone.forID(timezone));
     final Object o = input.get(timestampColumn);
     DateTime extracted = missingValue;
     if (o != null) {
@@ -116,12 +121,31 @@ public class TimestampSpec
         ParseCtx newCtx = new ParseCtx();
         newCtx.lastTimeObject = o;
         extracted = timestampConverter.apply(o);
+
+        // System.out.println("parse time -- " + extracted);
+        /*
+          * 需要将这个日期转换成的用户日期
+           */
+        /*
+        if(timestampFormat.equals("posix") || timestampFormat.equals("millis") || timestampFormat.equals("nano")){   // 时间戳类型
+
+          extracted = extracted.withZone(DateTimeZone.forID(timezone));
+          extracted = extracted.withZoneRetainFields(DateTimeZone.getDefault());
+        }
+
+        System.out.println("end -- " + extracted);
+        */
+
         newCtx.lastDateTime = extracted;
         parseCtx = newCtx;
       }
     }
 
-    extracted = extracted.withZone(DateTimeZone.forID(timezone)); // 解析时间戳，强行转换成
+    System.out.println("--------------start : " + extracted);
+    // 转换成默认时区
+    extracted = extracted.withZoneRetainFields(timeZoneBak);
+    System.out.println("--------------end : " + extracted);
+    DateTimeZone.setDefault(timeZoneBak);
     return extracted;
   }
 

@@ -134,7 +134,7 @@ public class QueryableIndexStorageAdapter implements StorageAdapter
   public DateTime getMinTime()
   {
     try (final GenericColumn column = index.getColumn(Column.TIME_COLUMN_NAME).getGenericColumn()) {
-      return new DateTime(column.getLongSingleValueRow(0));  // 最小时间
+      return new DateTime(column.getLongSingleValueRow(0));
     }
   }
 
@@ -142,7 +142,7 @@ public class QueryableIndexStorageAdapter implements StorageAdapter
   public DateTime getMaxTime()
   {
     try (final GenericColumn column = index.getColumn(Column.TIME_COLUMN_NAME).getGenericColumn()) {
-      return new DateTime(column.getLongSingleValueRow(column.length() - 1)); // 最大值时间
+      return new DateTime(column.getLongSingleValueRow(column.length() - 1));
     }
   }
 

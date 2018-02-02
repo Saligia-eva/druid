@@ -304,7 +304,7 @@ public class GenericIndexed<T> implements Indexed<T>
 
   public static <T> GenericIndexed<T> read(ByteBuffer buffer, ObjectStrategy<T> strategy)
   {
-    byte versionFromBuffer = buffer.get();  // 获取版本
+    byte versionFromBuffer = buffer.get();
 
     if (version == versionFromBuffer) {
       boolean allowReverseLookup = buffer.get() == 0x1;
