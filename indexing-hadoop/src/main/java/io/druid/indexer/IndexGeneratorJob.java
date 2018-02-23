@@ -71,6 +71,7 @@ import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
 
 import java.io.File;
@@ -161,10 +162,12 @@ public class IndexGeneratorJob implements Jobby
     try {
       Job job = Job.getInstance(
           new Configuration(),
-          StringUtils.format("%s-index-generator-%s", config.getDataSource(), config.getIntervals())
+          StringUtils.format("%s-index-generator", config.getDataSource())
       );
 
       job.getConfiguration().set("io.sort.record.percent", "0.23");
+
+      job.setJarByClass(IndexGeneratorJob.class);
 
       JobHelper.injectSystemProperties(job);
       config.addJobProperties(job);
@@ -536,6 +539,9 @@ public class IndexGeneratorJob implements Jobby
         throws IOException, InterruptedException
     {
       config = HadoopDruidIndexerConfig.fromConfiguration(context.getConfiguration());
+
+      // 设置时区
+      DateTimeZone.setDefault(DateTimeZone.forID(context.getConfiguration().get("user.timezone")));
 
       aggregators = config.getSchema().getDataSchema().getAggregators();
       combiningAggs = new AggregatorFactory[aggregators.length];

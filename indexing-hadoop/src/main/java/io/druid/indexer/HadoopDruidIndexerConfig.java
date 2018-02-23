@@ -562,6 +562,23 @@ public class HadoopDruidIndexerConfig
     for (final Map.Entry<String, String> entry : schema.getTuningConfig().getJobProperties().entrySet()) {
       conf.set(entry.getKey(), entry.getValue());
     }
+
+    // 设置时区环境变量
+    if(schema.getTuningConfig().getJobProperties().get("user.timezone") == null){
+      String timeZone =  System.getenv("user.timezone");
+
+      if(timeZone == null){
+        timeZone = "+0800";
+      }
+
+      if(!timeZone.equals("UTC") && timeZone.startsWith("UTC")){
+        timeZone.substring(3, timeZone.length());
+      }
+
+      conf.set("user.timezone", timeZone);
+    }else{
+      conf.set("user.timezone", schema.getTuningConfig().getJobProperties().get("user.timezone"));
+    }
   }
 
   public void intoConfiguration(Job job)

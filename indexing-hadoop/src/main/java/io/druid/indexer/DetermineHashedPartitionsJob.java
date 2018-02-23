@@ -53,6 +53,7 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeComparator;
+import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
 
 import java.io.IOException;
@@ -88,11 +89,14 @@ public class DetermineHashedPartitionsJob implements Jobby
       final long startTime = System.currentTimeMillis();
       final Job groupByJob = Job.getInstance(
           new Configuration(),
-          StringUtils.format("%s-determine_partitions_hashed-%s", config.getDataSource(), config.getIntervals())
+          StringUtils.format("%s-determine_partitions_hashed", config.getDataSource())
       );
 
       JobHelper.injectSystemProperties(groupByJob);
       config.addJobProperties(groupByJob);
+
+      groupByJob.setJarByClass(DetermineHashedPartitionsJob.class);
+
       groupByJob.setMapperClass(DetermineCardinalityMapper.class);
       groupByJob.setMapOutputKeyClass(LongWritable.class);
       groupByJob.setMapOutputValueClass(BytesWritable.class);
@@ -101,6 +105,7 @@ public class DetermineHashedPartitionsJob implements Jobby
       groupByJob.setOutputValueClass(NullWritable.class);
       groupByJob.setOutputFormatClass(SequenceFileOutputFormat.class);
       groupByJob.setPartitionerClass(DetermineHashedPartitionsPartitioner.class);
+
       if (!config.getSegmentGranularIntervals().isPresent()) {
         groupByJob.setNumReduceTasks(1);
       } else {
@@ -312,6 +317,8 @@ public class DetermineHashedPartitionsJob implements Jobby
     {
       config = HadoopDruidIndexerConfig.fromConfiguration(context.getConfiguration());
       determineIntervals = !config.getSegmentGranularIntervals().isPresent();
+      // 设置时区
+      DateTimeZone.setDefault(DateTimeZone.forID(context.getConfiguration().get("user.timezone")));
     }
 
     @Override
@@ -419,6 +426,9 @@ public class DetermineHashedPartitionsJob implements Jobby
     {
       this.config = config;
       HadoopDruidIndexerConfig hadoopConfig = HadoopDruidIndexerConfig.fromConfiguration(config);
+      // 设置时区
+      DateTimeZone.setDefault(DateTimeZone.forID(config.get("user.timezone")));
+
       if (hadoopConfig.getSegmentGranularIntervals().isPresent()) {
         determineIntervals = false;
         int reducerNumber = 0;

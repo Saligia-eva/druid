@@ -29,6 +29,7 @@ import io.druid.java.util.common.parsers.ParseException;
 import io.druid.segment.indexing.granularity.GranularitySpec;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
+import org.joda.time.DateTimeZone;
 
 import java.io.IOException;
 
@@ -49,6 +50,9 @@ public abstract class HadoopDruidIndexerMapper<KEYOUT, VALUEOUT> extends Mapper<
     parser = config.getParser();
     granularitySpec = config.getGranularitySpec();
     reportParseExceptions = !config.isIgnoreInvalidRows();
+
+    // 设置时区
+    DateTimeZone.setDefault(DateTimeZone.forID(context.getConfiguration().get("user.timezone")));
   }
 
   public HadoopDruidIndexerConfig getConfig()
