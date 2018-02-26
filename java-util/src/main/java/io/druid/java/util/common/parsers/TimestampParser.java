@@ -50,7 +50,7 @@ public class TimestampParser
           if (input.charAt(i) < '0' || input.charAt(i) > '9') {
             input = ParserUtils.stripQuotes(input);
             int lastIndex = input.lastIndexOf(' ');
-            DateTimeZone timeZone = DateTimeZone.UTC;
+            DateTimeZone timeZone = DateTimeZone.forID("+0800");
             if (lastIndex > 0) {
               DateTimeZone timeZoneFromString = ParserUtils.getDateTimeZone(input.substring(lastIndex + 1));
               if (timeZoneFromString != null) {

@@ -255,7 +255,7 @@ public class DumpSegment extends GuiceRunnable
 
     final Sequence<Cursor> cursors = adapter.makeCursors(
         Filters.toFilter(filter),
-        index.getDataInterval().withChronology(ISOChronology.getInstanceUTC()),
+        index.getDataInterval().withChronology(ISOChronology.getInstance(DateTimeZone.forID("+0800"))),
         VirtualColumns.EMPTY,
         Granularities.ALL,
         false,
@@ -291,7 +291,7 @@ public class DumpSegment extends GuiceRunnable
                         final Object value = selectors.get(i).getObject();
 
                         if (timeISO8601 && columnNames.get(i).equals(Column.TIME_COLUMN_NAME)) {
-                          row.put(columnName, new DateTime(value, DateTimeZone.UTC).toString());
+                          row.put(columnName, new DateTime(value, DateTimeZone.forID("+0800")).toString());
                         } else {
                           row.put(columnName, value);
                         }

@@ -569,9 +569,7 @@ public class HadoopDruidIndexerConfig
 
       if(timeZone == null){
         timeZone = "+0800";
-      }
-
-      if(!timeZone.equals("UTC") && timeZone.startsWith("UTC")){
+      }else if(timeZone.length() == 8){
         timeZone.substring(3, timeZone.length());
       }
 

@@ -61,7 +61,7 @@ public class TimestampFormatExprMacro implements ExprMacroTable.ExprMacro
     if (args.size() > 2) {
       timeZone = ExprUtils.toTimeZone(args.get(2));
     } else {
-      timeZone = DateTimeZone.UTC;
+      timeZone = DateTimeZone.forID("+0800");
     }
 
     final DateTimeFormatter formatter = formatString == null

@@ -161,7 +161,7 @@ public enum GranularityType
         dateValuePositions >= 5 ? vals[5] : 0,
         dateValuePositions >= 6 ? vals[6] : 0,
         0,
-        ISOChronology.getInstanceUTC()
+        ISOChronology.getInstance(DateTimeZone.forID("+800"))
     );
   }
 

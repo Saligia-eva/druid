@@ -35,6 +35,7 @@ import io.druid.query.QueryRunnerFactory;
 import io.druid.query.QueryToolChest;
 import io.druid.segment.column.Column;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.chrono.ISOChronology;
 
 import java.util.Arrays;
@@ -89,7 +90,7 @@ public class GroupByQueryRunnerTestHelper
           theVals.put(columnNames[i], value[i]);
         }
       }
-      expected.add(new MapBasedRow(new DateTime(value[timeIndex], ISOChronology.getInstanceUTC()), theVals));
+      expected.add(new MapBasedRow(new DateTime(value[timeIndex], ISOChronology.getInstance(DateTimeZone.forID("+0800"))), theVals));
     }
     return expected;
   }

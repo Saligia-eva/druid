@@ -20,6 +20,7 @@
 package io.druid.java.util.common;
 
 import com.google.common.collect.ImmutableList;
+import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
 import org.joda.time.chrono.ISOChronology;
 
@@ -30,12 +31,12 @@ public final class Intervals
 
   public static Interval utc(long startInstant, long endInstant)
   {
-    return new Interval(startInstant, endInstant, ISOChronology.getInstanceUTC());
+    return new Interval(startInstant, endInstant, DateTimeZone.forID("+0800"));
   }
 
   public static Interval of(String interval)
   {
-    return new Interval(interval, ISOChronology.getInstanceUTC());
+    return new Interval(interval, ISOChronology.getInstance(DateTimeZone.forID("+0800")));
   }
 
   private Intervals()

@@ -30,6 +30,7 @@ import io.druid.java.util.common.lifecycle.LifecycleStart;
 import io.druid.java.util.common.lifecycle.LifecycleStop;
 import io.druid.server.RequestLogLine;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 import org.joda.time.MutableDateTime;
 import org.joda.time.chrono.ISOChronology;
@@ -68,10 +69,10 @@ public class FileRequestLogger implements RequestLogger
     try {
       baseDir.mkdirs();
 
-      MutableDateTime mutableDateTime = DateTimes.nowUtc().toMutableDateTime(ISOChronology.getInstanceUTC());
+      MutableDateTime mutableDateTime = DateTimes.nowUtc().toMutableDateTime(ISOChronology.getInstance(DateTimeZone.forID("+0800")));
       mutableDateTime.setMillisOfDay(0);
       synchronized (lock) {
-        currentDay = mutableDateTime.toDateTime(ISOChronology.getInstanceUTC());
+        currentDay = mutableDateTime.toDateTime(ISOChronology.getInstance(DateTimeZone.forID("+0800")));
 
         fileWriter = getFileWriter();
       }

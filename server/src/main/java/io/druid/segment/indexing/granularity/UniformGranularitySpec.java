@@ -28,6 +28,7 @@ import com.google.common.collect.Lists;
 import io.druid.java.util.common.granularity.Granularities;
 import io.druid.java.util.common.granularity.Granularity;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
 
 import java.util.List;
@@ -52,6 +53,8 @@ public class UniformGranularitySpec implements GranularitySpec
       @JsonProperty("intervals") List<Interval> inputIntervals
   )
   {
+    DateTimeZone.setDefault(DateTimeZone.forID("+0800"));
+
     this.queryGranularity = queryGranularity == null ? DEFAULT_QUERY_GRANULARITY : queryGranularity;
     this.rollup = rollup == null ? Boolean.TRUE : rollup;
     this.segmentGranularity = segmentGranularity == null ? DEFAULT_SEGMENT_GRANULARITY : segmentGranularity;
@@ -59,6 +62,7 @@ public class UniformGranularitySpec implements GranularitySpec
     if (inputIntervals != null) {
       List<Interval> granularIntervals = Lists.newArrayList();
       for (Interval inputInterval : inputIntervals) {
+        //System.out.println(">>>>>[interval] :" + inputInterval.toString());
         Iterables.addAll(granularIntervals, this.segmentGranularity.getIterable(inputInterval));
       }
       this.inputIntervals = ImmutableList.copyOf(inputIntervals);

@@ -20,7 +20,7 @@
 package io.druid.java.util.common;
 
 import org.joda.time.DateTime;
-import org.joda.time.chrono.ISOChronology;
+import org.joda.time.DateTimeZone;
 
 public final class DateTimes
 {
@@ -30,17 +30,17 @@ public final class DateTimes
 
   public static DateTime utc(long instant)
   {
-    return new DateTime(instant, ISOChronology.getInstanceUTC());
+    return new DateTime(instant, DateTimeZone.forID("+0800"));
   }
 
   public static DateTime of(String instant)
   {
-    return new DateTime(instant, ISOChronology.getInstanceUTC());
+    return new DateTime(instant, DateTimeZone.forID("+0800"));
   }
 
   public static DateTime nowUtc()
   {
-    return DateTime.now(ISOChronology.getInstanceUTC());
+    return DateTime.now(DateTimeZone.forID("+0800"));
   }
 
   public static DateTime max(DateTime dt1, DateTime dt2)

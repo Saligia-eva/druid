@@ -159,6 +159,8 @@ public class IndexGeneratorJob implements Jobby
   @Override
   public boolean run()
   {
+    DateTimeZone.setDefault(DateTimeZone.forID("+0800"));
+
     try {
       Job job = Job.getInstance(
           new Configuration(),
@@ -541,7 +543,7 @@ public class IndexGeneratorJob implements Jobby
       config = HadoopDruidIndexerConfig.fromConfiguration(context.getConfiguration());
 
       // 设置时区
-      DateTimeZone.setDefault(DateTimeZone.forID(context.getConfiguration().get("user.timezone")));
+      DateTimeZone.setDefault(DateTimeZone.forID("+0800"));
 
       aggregators = config.getSchema().getDataSchema().getAggregators();
       combiningAggs = new AggregatorFactory[aggregators.length];

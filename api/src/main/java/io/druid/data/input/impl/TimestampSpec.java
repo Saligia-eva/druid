@@ -25,6 +25,7 @@ import com.google.common.base.Function;
 import io.druid.guice.annotations.PublicApi;
 import io.druid.java.util.common.parsers.TimestampParser;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 import java.util.List;
 import java.util.Map;
@@ -69,6 +70,8 @@ public class TimestampSpec
     this.missingValue = missingValue == null
                         ? DEFAULT_MISSING_VALUE
                         : missingValue;
+
+    DateTimeZone.setDefault(DateTimeZone.forID("+0800"));
   }
 
   @JsonProperty("column")
@@ -97,6 +100,7 @@ public class TimestampSpec
   public DateTime parseDateTime(Object input)
   {
     DateTime extracted = missingValue;
+
     if (input != null) {
       ParseCtx ctx = parseCtx.get();
       // Check if the input is equal to the last input, so we don't need to parse it again

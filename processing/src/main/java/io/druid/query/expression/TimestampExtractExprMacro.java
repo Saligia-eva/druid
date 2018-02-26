@@ -77,7 +77,7 @@ public class TimestampExtractExprMacro implements ExprMacroTable.ExprMacro
     if (args.size() > 2) {
       timeZone = ExprUtils.toTimeZone(args.get(2));
     } else {
-      timeZone = DateTimeZone.UTC;
+      timeZone = DateTimeZone.forID("+0800");
     }
 
     final ISOChronology chronology = ISOChronology.getInstance(timeZone);

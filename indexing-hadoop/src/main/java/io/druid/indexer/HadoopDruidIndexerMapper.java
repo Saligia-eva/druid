@@ -52,7 +52,7 @@ public abstract class HadoopDruidIndexerMapper<KEYOUT, VALUEOUT> extends Mapper<
     reportParseExceptions = !config.isIgnoreInvalidRows();
 
     // 设置时区
-    DateTimeZone.setDefault(DateTimeZone.forID(context.getConfiguration().get("user.timezone")));
+    DateTimeZone.setDefault(DateTimeZone.forID("+0800"));
   }
 
   public HadoopDruidIndexerConfig getConfig()

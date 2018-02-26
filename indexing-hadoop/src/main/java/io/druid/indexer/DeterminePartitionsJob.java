@@ -67,6 +67,7 @@ import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
 import org.joda.time.chrono.ISOChronology;
 
@@ -324,7 +325,7 @@ public class DeterminePartitionsJob implements Jobby
     {
       final List<Object> timeAndDims = HadoopDruidIndexerConfig.JSON_MAPPER.readValue(key.getBytes(), List.class);
 
-      final DateTime timestamp = new DateTime(timeAndDims.get(0), ISOChronology.getInstanceUTC());
+      final DateTime timestamp = new DateTime(timeAndDims.get(0), ISOChronology.getInstance(DateTimeZone.forID("+0800")));
       final Map<String, Iterable<String>> dims = (Map<String, Iterable<String>>) timeAndDims.get(1);
 
       helper.emitDimValueCounts(context, timestamp, dims);

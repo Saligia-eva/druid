@@ -65,7 +65,7 @@ public class TimeFormatExtractionFn implements ExtractionFn
       this.formatter = null;
     } else {
       this.formatter = (format == null ? ISODateTimeFormat.dateTime() : DateTimeFormat.forPattern(format))
-          .withZone(tz == null ? DateTimeZone.UTC : tz)
+          .withZone(tz == null ? DateTimeZone.forID("+0800") : tz)
           .withLocale(locale);
     }
 
@@ -109,7 +109,7 @@ public class TimeFormatExtractionFn implements ExtractionFn
   @Override
   public byte[] getCacheKey()
   {
-    final String tzId = (tz == null ? DateTimeZone.UTC : tz).getID();
+    final String tzId = (tz == null ? DateTimeZone.forID("+0800") : tz).getID();
     final String localeTag = (locale == null ? Locale.getDefault() : locale).toLanguageTag();
     final byte[] exprBytes = StringUtils.toUtf8(format + "\u0001" + tzId + "\u0001" + localeTag);
     final byte[] granularityCacheKey = granularity.getCacheKey();
@@ -142,7 +142,7 @@ public class TimeFormatExtractionFn implements ExtractionFn
       final Long theLong = GuavaUtils.tryParseLong((String) value);
       return theLong == null ? apply(DateTimes.of((String) value).getMillis()) : apply(theLong.longValue());
     } else {
-      return apply(new DateTime(value, ISOChronology.getInstanceUTC()).getMillis());
+      return apply(new DateTime(value, ISOChronology.getInstance(DateTimeZone.forID("+0800"))).getMillis());
     }
   }
 

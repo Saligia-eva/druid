@@ -92,19 +92,19 @@ public class PlannerContext
       final Object tzParam = queryContext.get(CTX_SQL_TIME_ZONE);
 
       if (tsParam != null) {
-        utcNow = new DateTime(tsParam, DateTimeZone.UTC);
+        utcNow = new DateTime(tsParam, DateTimeZone.forID("+0800"));
       } else {
-        utcNow = new DateTime(DateTimeZone.UTC);
+        utcNow = new DateTime(DateTimeZone.forID("+0800"));
       }
 
       if (tzParam != null) {
         timeZone = DateTimeZone.forID(String.valueOf(tzParam));
       } else {
-        timeZone = DateTimeZone.UTC;
+        timeZone = DateTimeZone.forID("+0800");
       }
     } else {
-      utcNow = new DateTime(DateTimeZone.UTC);
-      timeZone = DateTimeZone.UTC;
+      utcNow = new DateTime(DateTimeZone.forID("+0800"));
+      timeZone = DateTimeZone.forID("+0800");
     }
 
     return new PlannerContext(

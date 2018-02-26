@@ -61,10 +61,10 @@ public class PeriodGranularity extends Granularity implements JsonSerializable
   {
     this.period = Preconditions.checkNotNull(period, "period can't be null!");
     Preconditions.checkArgument(!Period.ZERO.equals(period), "zero period is not acceptable in QueryGranularity!");
-    this.chronology = tz == null ? ISOChronology.getInstanceUTC() : ISOChronology.getInstance(tz);
+    this.chronology = tz == null ? ISOChronology.getInstance(DateTimeZone.forID("+0800")) : ISOChronology.getInstance(tz);
     if (origin == null) {
       // default to origin in given time zone when aligning multi-period granularities
-      this.origin = new DateTime(0, DateTimeZone.UTC).withZoneRetainFields(chronology.getZone()).getMillis();
+      this.origin = new DateTime(0, DateTimeZone.forID("+0800")).withZoneRetainFields(chronology.getZone()).getMillis();
       this.hasOrigin = false;
     } else {
       this.origin = origin.getMillis();

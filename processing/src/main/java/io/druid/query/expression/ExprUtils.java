@@ -44,7 +44,7 @@ public class ExprUtils
     }
 
     final Object literalValue = timeZoneArg.getLiteralValue();
-    return literalValue == null ? DateTimeZone.UTC : DateTimeZone.forID((String) literalValue);
+    return literalValue == null ? DateTimeZone.forID("+0800") : DateTimeZone.forID((String) literalValue);
   }
 
   public static PeriodGranularity toPeriodGranularity(
@@ -68,7 +68,7 @@ public class ExprUtils
     if (originArg == null) {
       origin = null;
     } else {
-      Chronology chronology = timeZone == null ? ISOChronology.getInstanceUTC() : ISOChronology.getInstance(timeZone);
+      Chronology chronology = timeZone == null ? ISOChronology.getInstance(DateTimeZone.forID("+0800")) : ISOChronology.getInstance(timeZone);
       final Object value = originArg.eval(bindings).value();
       origin = value != null ? new DateTime(value, chronology) : null;
     }

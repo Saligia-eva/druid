@@ -21,6 +21,7 @@ package io.druid.query.spec;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.druid.java.util.common.IAE;
+import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
 import org.joda.time.chrono.ISOChronology;
 
@@ -51,7 +52,7 @@ public class LegacySegmentSpec extends MultipleIntervalSegmentSpec
 
     return intervalStringList
         .stream()
-        .map(input -> new Interval(input, ISOChronology.getInstanceUTC()))
+        .map(input -> new Interval(input, ISOChronology.getInstance(DateTimeZone.forID("+0800"))))
         .collect(Collectors.toList());
   }
 

@@ -86,6 +86,8 @@ public class DetermineHashedPartitionsJob implements Jobby
        * Group by (timestamp, dimensions) so we can correctly count dimension values as they would appear
        * in the final segment.
        */
+      DateTimeZone.setDefault(DateTimeZone.forID("+0800"));
+
       final long startTime = System.currentTimeMillis();
       final Job groupByJob = Job.getInstance(
           new Configuration(),
@@ -318,7 +320,7 @@ public class DetermineHashedPartitionsJob implements Jobby
       config = HadoopDruidIndexerConfig.fromConfiguration(context.getConfiguration());
       determineIntervals = !config.getSegmentGranularIntervals().isPresent();
       // 设置时区
-      DateTimeZone.setDefault(DateTimeZone.forID(context.getConfiguration().get("user.timezone")));
+      DateTimeZone.setDefault(DateTimeZone.forID("+0800"));
     }
 
     @Override
