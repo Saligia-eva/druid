@@ -89,6 +89,8 @@ public abstract class HadoopDruidIndexerMapper<KEYOUT, VALUEOUT> extends Mapper<
           || granularitySpec.bucketInterval(DateTimes.utc(inputRow.getTimestampFromEpoch()))
                             .isPresent()) {
         innerMap(inputRow, value, context, reportParseExceptions);
+      }else{
+        context.getCounter(HadoopDruidIndexerConfig.IndexJobCounters.TIME_RANGE_EROR_COUNTER).increment(1);
       }
     }
     catch (RuntimeException e) {

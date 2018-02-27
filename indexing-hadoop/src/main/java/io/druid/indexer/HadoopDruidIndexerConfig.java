@@ -127,7 +127,8 @@ public class HadoopDruidIndexerConfig
 
   public static enum IndexJobCounters
   {
-    INVALID_ROW_COUNTER
+    INVALID_ROW_COUNTER,
+    TIME_RANGE_EROR_COUNTER
   }
 
   public static HadoopDruidIndexerConfig fromSpec(HadoopIngestionSpec spec)
