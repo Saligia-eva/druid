@@ -20,7 +20,6 @@
 package io.druid.java.util.common.parsers;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 
 import javax.annotation.Nullable;
@@ -42,11 +41,13 @@ public class DelimitedParser extends AbstractFlatTextFormatParser
     super(listDelimiter, hasHeaderRow, maxSkipHeaderRows);
     this.delimiter = delimiter != null ? delimiter : FlatTextFormat.DELIMITED.getDefaultDelimiter();
 
+    /*
     Preconditions.checkState(
         !this.delimiter.equals(getListDelimiter()),
         "Cannot have same delimiter and list delimiter of [%s]",
         this.delimiter
     );
+    */
 
     this.splitter = Splitter.on(this.delimiter);
   }

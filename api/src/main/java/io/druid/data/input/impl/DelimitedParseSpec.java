@@ -50,7 +50,13 @@ public class DelimitedParseSpec extends ParseSpec
   {
     super(timestampSpec, dimensionsSpec);
 
-    this.delimiter = delimiter;
+    if(delimiter.equals("^A")){
+      this.delimiter = "\u0001";
+
+    }else{
+      this.delimiter = delimiter;
+
+    }
     this.listDelimiter = listDelimiter;
     this.columns = columns;
     this.hasHeaderRow = hasHeaderRow;
