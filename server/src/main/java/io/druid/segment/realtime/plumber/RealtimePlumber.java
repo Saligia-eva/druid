@@ -814,8 +814,11 @@ public class RealtimePlumber implements Plumber
     final long windowMillis = windowPeriod.toStandardDuration().getMillis();
     log.info("Starting merge and push.");
     DateTime minTimestampAsDate = segmentGranularity.bucketStart(
-        DateTimes.utc(Math.max(windowMillis, rejectionPolicy.getCurrMaxTime().getMillis()) - windowMillis)
+        DateTimes.utc(Math.max(windowMillis, DateTime.now().getMillis()) - windowMillis)
     );
+
+    log.info("windowMillis:[%d] , rejectionPolicy Time : [%d]", windowMillis, DateTime.now().getMillis());
+    
     long minTimestamp = minTimestampAsDate.getMillis();
 
     log.info(
